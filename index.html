@@ -118,8 +118,10 @@
       }
       var elevations = [];
       function cb(returnVal, i) {
-        elevations[i] = returnVal;
-        console.log(elevations[i]);
+        if (returnVal > 0) {
+          elevations[i] = returnVal;
+          console.log(elevations[i]);
+        }
         //document.getElementById('debugging').innerHTML += elevations[i] + ", ";
       }
       function displayLocationElevation(location, elevator, infowindow, callbackFn, i) {
@@ -152,7 +154,7 @@
       function elevationLoop(elevator, infowindow){
         var coordinates = getPoints();
         //console.log(coordinates[0].lat());
-        var elevations = [];
+        // var elevations = [];
         var i;
         for (i=0; i<coordinates.length; i++){
           //{lat: coordinates[i].lat(), lng: coordinates[i].lng()}
