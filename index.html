@@ -75,10 +75,11 @@
       <button onclick="changeGradient()">Change gradient</button>
       <button onclick="changeRadius()">Change radius</button>
       <button onclick="changeOpacity()">Change opacity</button>
+      <button onclick="toggleTraffic()">Toggle Traffic</button>
     </div>
 
     <script>
-      var map, heatmap;
+      var map, heatmap, trafficLayer;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 14,
@@ -86,7 +87,7 @@
           // center: {lat: 39.95224, lng: -75.1910858},
           mapTypeId: 'terrain'
         });
-        var trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer = new google.maps.TrafficLayer();
         trafficLayer.setMap(map);
         var geocoder = new google.maps.Geocoder();
         var elevator = new google.maps.ElevationService;
@@ -113,9 +114,15 @@
         //   });
         // }
       }
+      
       function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
       }
+
+      function toggleTraffic() {
+        trafficLayer.setMap(trafficLayer.getMap() ? null : map);
+      }
+
       var elevations = [];
       function cb(returnVal, i) {
         if (returnVal > 0) {
