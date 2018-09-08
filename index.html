@@ -15,7 +15,6 @@
         margin: 0;
         padding: 0;
       }
-
       #floating-panel {
         position: absolute;
         top: 75px;
@@ -29,7 +28,6 @@
         line-height: 30px;
         padding-left: 10px;
       }
-
       #debugging {
         position: absolute;
         top: 300px;
@@ -43,7 +41,6 @@
         line-height: 30px;
         padding-left: 10px;
       }
-
       #abc {
         position: absolute;
         top: 200px;
@@ -81,34 +78,27 @@
     </div>
 
     <script>
-
       var map, heatmap;
-
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
-          center: {lat: 40.723155, lng: -73.952472},
+          zoom: 14,
+          center: {lat: 40.7218, lng: -74.0008},
           // center: {lat: 39.95224, lng: -75.1910858},
           mapTypeId: 'terrain'
         });
-
         var trafficLayer = new google.maps.TrafficLayer();
         trafficLayer.setMap(map);
-
         var geocoder = new google.maps.Geocoder();
         var elevator = new google.maps.ElevationService;
         var infowindow = new google.maps.InfoWindow({map: map});
-
         document.getElementById('submit').addEventListener('click', function(event) {
           geocodeAddress(geocoder, map);
           //elevationLoop(elevator, infowindow);
         });
-
         heatmap = new google.maps.visualization.HeatmapLayer({
           data: getPoints(),
           map: map
         });
-
         // for(i = 0; i < points.length; i++) {
         //   point = points[i];
         //   var marker = new google.maps.Marker({
@@ -118,19 +108,15 @@
         //   });
         // }
       }
-
       function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
       }
-
       var elevations = [];
-
       function cb(returnVal, i) {
         elevations[i] = returnVal;
         console.log(elevations[i]);
         //document.getElementById('debugging').innerHTML += elevations[i] + ", ";
       }
-
       function displayLocationElevation(location, elevator, infowindow, callbackFn, i) {
         var returnVal = 0;
         // Initiate the location request
@@ -154,26 +140,20 @@
               console.log(' Elevation service failed due to: ' + status);
               //infowindow.setContent('Elevation service failed due to: ' + status);
             }
-
             callbackFn(returnVal, i);
           });
-
-
           //return subFunc(results, status);
       }
-
       function elevationLoop(elevator, infowindow){
           var coordinates = getPoints();
           //console.log(coordinates[0].lat());
           var elevations = [];
-
           var i;
           for (i=0; i<coordinates.length; i++){
             //{lat: coordinates[i].lat(), lng: coordinates[i].lng()}
             displayLocationElevation(coordinates[i], elevator, infowindow, cb, i);
           }
       }
-
       function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('address').value;
         geocoder.geocode({'address': address}, function(results, status) {
@@ -185,18 +165,14 @@
               map: resultsMap,
               position: results[0].geometry.location
             });
-
             //console.log(results);
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
       }
-
       function parseJSON() {
-
       }
-
       function changeGradient() {
         var gradient = [
           'rgba(0, 255, 255, 0)',
@@ -216,31 +192,33 @@
         ]
         heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
       }
-
       function changeRadius() {
         heatmap.set('radius', heatmap.get('radius') ? null : 20);
       }
-
       function changeOpacity() {
         heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
       }
-
       function generateHeatmaps() {
-
       }
-
       // Heatmap data: 500 Points
       function getPoints() {
         var j;
         var latLngValues = [];
-        for (j = 0; j < 30; j+=2) {
-          var random = Math.random()/0.0004;
-          latLngValues[j] = new google.maps.LatLng(40.723155 + random*j, -73.952472 + random*j);
-          latLngValues[j+1] = new google.maps.LatLng(40.723155 - random*j, -73.952472 - random*j);
+
+        for (j = 0; j < 2000; j+=4) {
+
+          var randomlatpos = Math.random()*0.03;
+          var randomlongpos = Math.random()*0.03;
+          var randomlatneg = Math.random()*0.03;
+          var randomlongneg = Math.random()*0.03;
+          latLngValues[j] = new google.maps.LatLng(40.7218 + randomlatpos, -74.0008 + randomlongpos);
+          latLngValues[j+1] = new google.maps.LatLng(40.7218 - randomlatneg, -74.0008 - randomlongneg);
+          latLngValues[j+2] = new google.maps.LatLng(40.7218 + randomlatpos, -74.0008 - randomlongpos);
+          latLngValues[j+3] = new google.maps.LatLng(40.7218 - randomlatneg, -74.0008 + randomlongneg);
+
         }
         return latLngValues;
       }
-
     </script>
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXgaT6XxdEOyQTmZas4ipdroj3y3m_faM&libraries=visualization&callback=initMap">
