@@ -91,9 +91,14 @@
         var geocoder = new google.maps.Geocoder();
         var elevator = new google.maps.ElevationService;
         var infowindow = new google.maps.InfoWindow({map: map});
+        elevationLoop(elevator, infowindow);
         document.getElementById('submit').addEventListener('click', function(event) {
           geocodeAddress(geocoder, map);
-          //elevationLoop(elevator, infowindow);
+          // elevationLoop(elevator, infowindow);
+          heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          map: map
+        });
         });
         heatmap = new google.maps.visualization.HeatmapLayer({
           data: getPoints(),
@@ -145,14 +150,17 @@
           //return subFunc(results, status);
       }
       function elevationLoop(elevator, infowindow){
-          var coordinates = getPoints();
-          //console.log(coordinates[0].lat());
-          var elevations = [];
-          var i;
-          for (i=0; i<coordinates.length; i++){
-            //{lat: coordinates[i].lat(), lng: coordinates[i].lng()}
-            displayLocationElevation(coordinates[i], elevator, infowindow, cb, i);
+        var coordinates = getPoints();
+        //console.log(coordinates[0].lat());
+        var elevations = [];
+        var i;
+        for (i=0; i<coordinates.length; i++){
+          //{lat: coordinates[i].lat(), lng: coordinates[i].lng()}
+          displayLocationElevation(coordinates[i], elevator, infowindow, cb, i);
+          if (i % 60 == 0) {
+            window.setTimeout(function a(){}, 1000);
           }
+        }
       }
       function geocodeAddress(geocoder, resultsMap) {
         var address = document.getElementById('address').value;
