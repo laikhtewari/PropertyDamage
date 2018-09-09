@@ -99,6 +99,7 @@
       <button onclick="changeRadius()">Change radius</button>
       <button onclick="changeOpacity()">Change opacity</button>
       <button onclick="toggleTraffic()">Toggle Traffic</button>
+      <button onclick="showHeatmap()">Show Heatmap</button>
     </div>
 
     <script>
@@ -126,6 +127,8 @@
             map: map
           });
         });
+
+        showHeatmap();
        
         // for(i = 0; i < points.length; i++) {
         //   point = points[i];
@@ -138,6 +141,16 @@
 
         drawPointers()
 
+      }
+
+      function showHeatmapForCategory(cat) {
+        var sorted = final_latLngs.sort()
+        var len = final_latLngs.length;
+        var subset = final_latLngs.slice(0,(cat * (Math.floor(len*.2) - 1)))
+        heatmap = new google.maps.visualization.HeatmapLayer({
+            data: subset,
+            map: map
+        });
       }
 
       // function getPointsForHeatmap() {
@@ -160,6 +173,10 @@
         }
       }
 
+      function showHeatmap() {
+        showHeatmapForCategory(document.getElementById('categorySelector').value)
+      }
+
       function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
       }
@@ -179,14 +196,6 @@
           elevations.push(returnVal);
           // console.log(elevations[i]);
           final_latLngs.push(latLngs[i])
-          console.log(i.toString())
-          if (i > 1000) {
-            console.log("HERE")
-            heatmap = new google.maps.visualization.HeatmapLayer({
-              data: final_latLngs,
-              map: map
-            });
-          }
         
         }
         //document.getElementById('debugging').innerHTML += elevations[i] + ", ";
