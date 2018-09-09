@@ -102,8 +102,9 @@
     </div>
 
     <script>
-      var map, heatmap, trafficLayer;
+      var map, heatmap, trafficLayer, latLngs;
       function initMap() {
+        latLngs = getPoints();
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 14,
           center: {lat: 40.7218, lng: -74.0008},
@@ -116,18 +117,16 @@
         var elevator = new google.maps.ElevationService;
         var infowindow = new google.maps.InfoWindow({map: map});
         elevationLoop(elevator, infowindow);
+        // var heatmapPoints = getPointsForHeatmap();
         document.getElementById('submit').addEventListener('click', function(event) {
           geocodeAddress(geocoder, map);
           // elevationLoop(elevator, infowindow);
           heatmap = new google.maps.visualization.HeatmapLayer({
-          data: getPoints(),
-          map: map
+            data: final_latLngs,
+            map: map
+          });
         });
-        });
-        heatmap = new google.maps.visualization.HeatmapLayer({
-          data: getPoints(),
-          map: map
-        });
+       
         // for(i = 0; i < points.length; i++) {
         //   point = points[i];
         //   var marker = new google.maps.Marker({
@@ -136,6 +135,29 @@
         //     title: point
         //   });
         // }
+
+        drawPointers()
+
+      }
+
+      // function getPointsForHeatmap() {
+      //   var points = final_latLngs
+      //   var pointsToBeShown = [];
+      //   for (var i = 0; i < points.length; i++) {
+      //     var coord = points[i];
+      //     pointsToBeShown.push(new google.maps.LatLng(coord.lat(), coord.lng()))
+      //   }
+      //   return pointsToBeShown;
+      // }
+
+      function drawPointers(){
+        for (var i = 0; i < final_latLngs.length; i++) {
+          var marker = new google.maps.Marker({
+            position: {lat: final_latLngs[i].lat(), lng: final_latLngs[i].lng()},
+            map: map,
+            title: elevations[i].toString()
+          });
+        }
       }
 
       function toggleHeatmap() {
@@ -151,13 +173,33 @@
       }
 
       var elevations = [];
+      var final_latLngs = [];
       function cb(returnVal, i) {
         if (returnVal > 0) {
-          elevations[i] = returnVal;
-          console.log(elevations[i]);
+          elevations.push(returnVal);
+          // console.log(elevations[i]);
+          final_latLngs.push(latLngs[i])
+          console.log(i.toString())
+          if (i > 1000) {
+            console.log("HERE")
+            heatmap = new google.maps.visualization.HeatmapLayer({
+              data: final_latLngs,
+              map: map
+            });
+          }
+        
         }
         //document.getElementById('debugging').innerHTML += elevations[i] + ", ";
       }
+
+      // function inWater(lat, long) {
+      //   var xmlHttp = new XMLHttpRequest();
+      //   xmlHttp.open( "GET", "https://api.onwater.io/api/v1/results/" + lat.toString() + "," + long.toString(), false ); // false for synchronous request
+      //   xmlHttp.send( null );
+      //   console.dir(xmlHttp.responseText)
+      //   return xmlHttp.responseText.water;
+      // }
+
       function displayLocationElevation(location, elevator, infowindow, callbackFn, i) {
         var returnVal = 0;
         // Initiate the location request
@@ -171,7 +213,7 @@
               // Open the infowindow indicating the elevation at the clicked position.
               //infowindow.setContent('The elevation at this point <br>is ' +
               //results[0].elevation + ' meters.');
-              console.log('Elevation is ' + results[0].elevation);
+              // console.log('Elevation is ' + results[0].elevation);
               returnVal = results[0].elevation;
             } else {
               console.log(' Elevation not found ');
