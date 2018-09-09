@@ -54,6 +54,20 @@
         line-height: 30px;
         padding-left: 10px;
       }
+      #categorySelector {
+        position: absolute;
+        top: 400px;
+        left: 10px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+
     </style>
   </head>
 
@@ -68,6 +82,15 @@
     <div id="debugging">
       <!--<input id="debugVal" type="textbox" placeholder="DebuggingValueHere">-->
     </div>
+
+    <select id="categorySelector" onchange="categoryChanged()" name="category" size="5">
+      <option selected="selected" value="1">Category 1</option>
+      <option value="2">Category 2</option>
+      <option value="3">Category 3</option>
+      <option value="4">Category 4</option>
+      <option value="5">Category 5</option>
+    </select>
+
     <div id="map"></div>
 
     <div id="abc">
@@ -114,13 +137,17 @@
         //   });
         // }
       }
-      
+
       function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
       }
 
       function toggleTraffic() {
         trafficLayer.setMap(trafficLayer.getMap() ? null : map);
+      }
+
+      function categoryChanged() {
+        // do math here
       }
 
       var elevations = [];
